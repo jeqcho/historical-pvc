@@ -1,0 +1,22 @@
+[project]
+name = "historical-pvc"
+version = "0.1.0"
+description = "PVC analysis of historical elections from PrefLib"
+requires-python = ">=3.10"
+dependencies = [
+    "preflibtools",
+    "scipy",
+    "matplotlib",
+    "seaborn",
+    "pandas",
+    "numpy",
+    "pvc-toolbox @ git+https://github.com/jeqcho/pvc-toolbox",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
