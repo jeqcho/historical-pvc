@@ -34,21 +34,21 @@ logger = logging.getLogger(__name__)
 # Dataset configurations
 DATASETS = {
     'spotify': {
-        'path': 'data/spotify',
+        'path': '../data/spotify',
         'pattern': '*.soc',  # Use complete orders
         'n_min': 20, 'n_max': 40,
         'm_min': 80, 'm_max': 100,
         'regime': 'n < m'
     },
     'polish': {
-        'path': 'data/polish',
+        'path': '../data/polish',
         'pattern': '*.soi',  # Only incomplete orders available
         'n_min': 10, 'n_max': 20,
         'm_min': 10, 'm_max': 20,
         'regime': 'n = m'
     },
     'eurovision': {
-        'path': 'data/eurovision',
+        'path': '../data/eurovision',
         'pattern': '*.soi',  # Only incomplete orders available
         'n_min': 80, 'n_max': 100,
         'm_min': 20, 'm_max': 40,
@@ -226,10 +226,18 @@ def create_visualizations(df: pd.DataFrame, output_dir: Path):
     
     regime_order = ['n < m', 'n = m', 'n > m']
     
-    # 1. Strip plot for PVC proportion
+    # 1. Strip plot for PVC proportion with mean markers
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.stripplot(data=df, x='pvc_proportion', y='regime', order=regime_order,
                   jitter=True, alpha=0.6, size=8, ax=ax)
+    # Add mean markers
+    for i, regime in enumerate(regime_order):
+        regime_data = df[df['regime'] == regime]['pvc_proportion']
+        if len(regime_data) > 0:
+            mean_val = regime_data.mean()
+            ax.scatter([mean_val], [i], marker='D', s=100, c='red', 
+                      edgecolors='black', linewidth=1.5, zorder=10, label='Mean' if i == 0 else '')
+    ax.legend(loc='upper right')
     ax.set_xlabel('Proportion of Candidates in PVC')
     ax.set_ylabel('Regime')
     ax.set_title('PVC Proportion by Regime')
@@ -238,10 +246,18 @@ def create_visualizations(df: pd.DataFrame, output_dir: Path):
     plt.close()
     logger.info("Created pvc_proportion_strip.png")
     
-    # 2. Strip plot for epsilon
+    # 2. Strip plot for epsilon with mean markers
     fig, ax = plt.subplots(figsize=(10, 6))
     sns.stripplot(data=df, x='epsilon', y='regime', order=regime_order,
                   jitter=True, alpha=0.6, size=8, ax=ax)
+    # Add mean markers
+    for i, regime in enumerate(regime_order):
+        regime_data = df[df['regime'] == regime]['epsilon']
+        if len(regime_data) > 0:
+            mean_val = regime_data.mean()
+            ax.scatter([mean_val], [i], marker='D', s=100, c='red', 
+                      edgecolors='black', linewidth=1.5, zorder=10, label='Mean' if i == 0 else '')
+    ax.legend(loc='upper right')
     ax.set_xlabel('Effective Epsilon of Winner')
     ax.set_ylabel('Regime')
     ax.set_title('Effective Epsilon by Regime')
@@ -345,7 +361,7 @@ def main():
             logger.info(f"  Epsilon: {regime_df['epsilon'].mean():.4f} ± {regime_df['epsilon'].std():.4f}")
     
     # Save results to CSV
-    output_dir = Path(__file__).parent / 'plots'
+    output_dir = Path(__file__).parent.parent / 'plots'
     df.to_csv(output_dir / 'results.csv', index=False)
     logger.info(f"\nResults saved to {output_dir / 'results.csv'}")
     

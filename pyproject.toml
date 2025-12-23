@@ -11,6 +11,7 @@ dependencies = [
     "pandas",
     "numpy",
     "pvc-toolbox @ git+https://github.com/jeqcho/pvc-toolbox",
+    "votekit @ git+https://github.com/jeqcho/VoteKit",
 ]
 
 [build-system]
