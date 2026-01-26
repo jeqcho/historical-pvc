@@ -2,7 +2,7 @@
 name = "historical-pvc"
 version = "0.1.0"
 description = "PVC analysis of historical elections from PrefLib"
-requires-python = ">=3.10"
+requires-python = ">=3.11,<3.14"
 dependencies = [
     "preflibtools",
     "scipy",
@@ -20,4 +20,7 @@ build-backend = "hatchling.build"
 
 [tool.hatch.metadata]
 allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
