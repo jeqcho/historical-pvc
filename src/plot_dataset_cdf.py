@@ -38,12 +38,12 @@ DATASETS = {
     'polish': {
         'path': '../data/polish',
         'patterns': ['*.soi'],
-        'label': 'Polish'
+        'label': 'Poland Local Elections'
     },
     'ers': {
         'path': '../data/ers',
         'patterns': ['*.soi'],
-        'label': 'ERS'
+        'label': 'Electoral Reform Society (ERS)'
     },
     'eurovision': {
         'path': '../data/eurovision',
@@ -238,31 +238,35 @@ def create_bar_plot_with_random(df: pd.DataFrame, random_baseline: float,
 
 def create_bar_plot_with_random_annotation(df: pd.DataFrame, random_baseline: float, 
                                             dataset_label: str, output_path: Path):
-    """Create bar plot with std error and random baseline shown as annotation in legend."""
-    fig, ax = plt.subplots(figsize=(10, 6))
+    """Create slide-quality bar plot with std error and random baseline shown as annotation."""
+    fig, ax = plt.subplots(figsize=(12, 7))
     
     sns.barplot(data=df, x='voting_rule', y='epsilon',
                 order=VOTING_RULES, hue='voting_rule', hue_order=VOTING_RULES,
                 palette=RULE_COLORS, legend=False,
                 errorbar='se', capsize=0.1, ax=ax)
     
-    ax.set_xlabel('Voting Rule', fontsize=14)
-    ax.set_ylabel('Mean Critical Epsilon', fontsize=14)
-    ax.set_title(f'{dataset_label}: Critical Epsilon by Voting Rule (Std Error)', fontsize=16)
+    ax.set_xlabel('Voting Rule', fontsize=16)
+    ax.set_ylabel('Mean Critical Epsilon', fontsize=16)
+    ax.set_title(f'{dataset_label}: Critical Epsilon by Voting Rule', fontsize=20)
     ax.set_xticks(range(len(VOTING_RULES)))
-    ax.set_xticklabels([r.upper() for r in VOTING_RULES], fontsize=12)
-    ax.tick_params(axis='y', which='major', labelsize=12)
+    ax.set_xticklabels([r.upper() for r in VOTING_RULES], fontsize=14)
+    ax.tick_params(axis='y', which='major', labelsize=14)
     
     # Add random baseline as text annotation in legend area
     ax.annotate(f'Random baseline: {random_baseline:.4f}', 
                 xy=(0.02, 0.95), xycoords='axes fraction',
-                ha='left', va='top', fontsize=12,
+                ha='left', va='top', fontsize=13,
                 bbox=dict(boxstyle='round,pad=0.3', facecolor='white', edgecolor='gray', alpha=0.9))
     
     plt.tight_layout()
-    plt.savefig(output_path, dpi=150)
+    # Save PNG (raster)
+    plt.savefig(output_path, dpi=300)
+    # Save PDF (vector graphics)
+    pdf_path = output_path.with_suffix('.pdf')
+    plt.savefig(pdf_path, format='pdf', bbox_inches='tight')
     plt.close()
-    logger.info(f"Created {output_path}")
+    logger.info(f"Created {output_path} and {pdf_path}")
 
 
 def main():
